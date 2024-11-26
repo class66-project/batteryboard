@@ -68,22 +68,16 @@ add_compile_options(
     -DARDUINO_ARCH_AVR
 )
 
-add_executable(batteryboard)
-
 add_subdirectory(src)
-
-target_include_directories(batteryboard PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}
-    ArduinoCore-avr/cores/arduino
-    ArduinoCore-avr/variants/standard
-    ArduinoCore-avr/libraries/**
-    /usr/lib/avr/include
-)
 
 include_directories(
     ArduinoCore-avr/cores/arduino
     ArduinoCore-avr/variants/standard
+    ArduinoCore-avr/libraries/EEPROM/src
+    ArduinoCore-avr/libraries/HID/src
+    ArduinoCore-avr/libraries/SoftwareSerial/src
     ArduinoCore-avr/libraries/SPI/src
+    ArduinoCore-avr/libraries/Wire/src
 )
 
 add_library(core STATIC
@@ -117,30 +111,18 @@ add_library(core STATIC
 set_property(SOURCE ArduinoCore-avr/cores/arduino/wiring_pulse.S APPEND PROPERTY COMPILE_OPTIONS "-x" "assembler-with-cpp")
 
 
-add_library(spi STATIC
+add_library(SPI STATIC
     ArduinoCore-avr/libraries/SPI/src/SPI.cpp
 )
 
-# Main output
-set_target_properties(batteryboard PROPERTIES OUTPUT_NAME batteryboard.elf)
+add_library(Wire STATIC
+    ArduinoCore-avr/libraries/Wire/src/Wire.cpp
+)
 
-# Strip binary for upload
-add_custom_target(strip ALL avr-strip batteryboard.elf DEPENDS batteryboard)
+add_library(SoftwareSerial STATIC
+    ArduinoCore-avr/libraries/SoftwareSerial/src/SoftwareSerial.cpp
+)
 
-# Transform binary into hex, ignoring eeprom
-add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex batteryboard.elf batteryboard.hex DEPENDS strip)
-
-# Transfor eeprom
-add_custom_target(eeprom avr-objcopy -j .eeprom  --set-section-flags=.eeprom="alloc,load"  --change-section-lma .eeprom=0 -O ihex batteryboard.elf batteryboard.eep DEPENDS strip)
-
-# Target to upload using avrdude
-add_custom_target(upload avrdude -c ${PROG_TYPE} -p ${MCU} -U flash:w:batteryboard.hex DEPENDS hex)
-
-# Target to upload eeprom with avrdude
-add_custom_target(upload_eeprom avrdude -c ${PROG_TYPE} -p ${MCU}  -U eeprom:w:batteryboard.eep DEPENDS eeprom)
-
-# Target to burn fuses
-add_custom_target(fuses avrdude -c ${PROG_TYPE} -p ${MCU}  -U lfuse:w:${L_FUSE}:m -U hfuse:w:${H_FUSE}:m -U efuse:w:${E_FUSE}:m -U lock:w:${LOCK_BIT}:m )
-
-# Make sure we clean all the extra files we are generating
-set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "batteryboard.hex;batteryboard.eeprom;batteryboard.lst")
+add_library(HID STATIC
+    ArduinoCore-avr/libraries/HID/src/HID.cpp
+)
