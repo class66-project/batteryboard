@@ -84,7 +84,6 @@ include_directories(
     ArduinoCore-avr/cores/arduino
     ArduinoCore-avr/variants/standard
     ArduinoCore-avr/libraries/SPI/src
-    arduino-mcp2515
 )
 
 add_library(core STATIC
@@ -120,10 +119,6 @@ set_property(SOURCE ArduinoCore-avr/cores/arduino/wiring_pulse.S APPEND PROPERTY
 
 add_library(spi STATIC
     ArduinoCore-avr/libraries/SPI/src/SPI.cpp
-)
-
-add_library(arduino-mcp2515 STATIC
-    arduino-mcp2515/mcp2515.cpp
 )
 
 # Main output
