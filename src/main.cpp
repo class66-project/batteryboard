@@ -9,21 +9,8 @@
 #include <SPI.h>  // Library for using SPI Communication
 #include <mcp2515.h>  // Library for using CAN Communication
 
-// Chip select pin used for MCP2515
-#define CS_PIN 10
-// Baud rate of the CANBUS
-#define CAN_BAUDRATE 500e3
-
-// Millivolts per step in the ADC.
-// This value should be calibrated on a per-board basis, as it
-// will depend on the resistors
-#define MILLIVOLTSPERSTEP 29.3
-
-// Status LED output
-#define STATUS_LED 4
-
-// 24v input sense pin
-#define SENSE_24V A0
+#include "definitions.h"
+#include "localsensors.h"
 
 // A single CAN frame, re-used to send can messages
 struct can_frame canMsg;
@@ -81,20 +68,6 @@ void setup() {
   }
 }
 
-/**
- * Get the 24v line voltage
- *
- * This function reads the voltage on the 24v line, returning the voltage
- * in millivolts.
- *
- * @return The value of the voltage in millivolts
- */
-uint16_t get24VoltLine() {
-  int rawValue = analogRead(SENSE_24V);
-
-  uint16_t voltageInMv = round(rawValue * MILLIVOLTSPERSTEP);
-  return voltageInMv;
-}
 
 /**
  * Main loop function
