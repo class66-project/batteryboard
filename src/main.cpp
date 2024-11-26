@@ -13,19 +13,28 @@
 #define CAN_BAUDRATE 500000
 
 // This should be calibrated using a reliable voltage source
-#define MILLIVOLTSPERSTEP 2.93
-
+#define MILLIVOLTSPERSTEP 29.3
 
 #define STATUS_LED 4
 #define SENSE_24V A0
-#define SENSE_5V A1
 
-
+// A single CAN frame, re-used to send can messages
 struct can_frame canMsg;
-MCP2515 mcp2515(10);  // SPI CS Pin 10
 
+// Main MCP2515 object, used for communicating over CAN
+MCP2515 mcp2515(CS_PIN);
+
+// Error flashing of if there is an error initialising the CAN
 uint8_t caninit[10] = {1, 0, 1, 0, 1, 0, 0, 0, 0, 0};
 
+/**
+ * Function to display an error on the status LED.
+ *
+ * This function takes in an error code (defined as a uint_8t[10])
+ * and then displays it non-stop.
+ *
+ * @param error a uint_8t[10] pointer of the pattern to display
+ */ 
 void error_led(uint8_t *error) {
   int i;
   while (1) {
@@ -36,27 +45,55 @@ void error_led(uint8_t *error) {
   }
 }
 
+/**
+ * Main setup function
+ *
+ * Sets up the board ready for the main loop to run
+ */
 void setup() {
   Serial.begin(115200);
   SPI.begin();   // Begins SPI communication
 
   pinMode(STATUS_LED, OUTPUT);
   pinMode(SENSE_24V, INPUT);
-  pinMode(SENSE_5V, INPUT);
 
-  mcp2515.reset();
-  // Sets CAN at speed 500KBPS and Clock 8MHz
-  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ);
-  mcp2515.setNormalMode();  // Sets CAN at normal mode
+  // Initialise thet CAN tranciever, catching any errors
+  bool error = false;
+  if (mcp2515.reset() != mcp2515.ERROR_OK) {
+    error = true;
+  }
+  if (mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ) != mcp2515.ERROR_OK) {
+    error = true;
+  }
+  if (mcp2515.setNormalMode() != mcp2515.ERROR_OK) {
+    error = true;
+  }
+  if (error) {
+    // If we get an error, then display it on the error LED
+    error_led(caninit);
+  }
 }
 
+/**
+ * Get the 24v line voltage
+ *
+ * This function reads the voltage on the 24v line, returning the voltage
+ * in millivolts.
+ *
+ * @return The value of the voltage in millivolts
+ */
 uint16_t get24VoltLine() {
   int rawValue = analogRead(SENSE_24V);
 
-  uint32_t voltageInMv = round(rawValue * MILLIVOLTSPERSTEP);
+  uint16_t voltageInMv = round(rawValue * MILLIVOLTSPERSTEP);
   return voltageInMv;
 }
 
+/**
+ * Main loop function
+ *
+ * This loop is run continuously
+ */
 void loop() {
   digitalWrite(STATUS_LED, 1);
   delay(100);
