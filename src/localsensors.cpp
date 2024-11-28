@@ -8,6 +8,8 @@
 
 #include "localsensors.h"
 #include "definitions.h"
+#include "statusled.h"
+#include "can.h"
 
 uint16_t getTempearature(uint8_t index) {
     // Do nothing for now
@@ -26,4 +28,21 @@ uint16_t get24VoltLine() {
 
   uint16_t voltageInMv = round(rawValue * MILLIVOLTSPERSTEP);
   return voltageInMv;
+}
+
+
+void runLocalSensors() {
+  struct can_frame canMsg;
+
+  flashStatusLED();
+  uint16_t _24v = get24VoltLine();
+
+  uint8_t data[sizeof(uint16_t) + 1];
+
+  data[0] = 0x04;
+  for (int i=0; i < sizeof(uint16_t); i++) {
+    data[i + 1] = _24v >> i*8;
+  }
+
+  sendSensors(data, sizeof(uint16_t) + 1);
 }

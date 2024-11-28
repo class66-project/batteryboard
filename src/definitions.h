@@ -23,3 +23,6 @@
 
 // 24v input sense pin
 #define SENSE_24V A0
+
+// DE/RE pin for MAX485
+#define DE 9

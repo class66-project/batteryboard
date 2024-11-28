@@ -1,16 +1,18 @@
 add_executable(batteryboard)
 
-file(GLOB SRC_FILES "*.cpp") 
+file(GLOB SRC_FILES "*.cpp")
 
 target_sources(batteryboard PRIVATE ${SRC_FILES})
 
-target_link_libraries(batteryboard core SPI arduino-mcp2515)
+target_link_libraries(batteryboard core SPI arduino-mcp2515 SoftwareSerial)
 
 target_include_directories(batteryboard PRIVATE
     arduino-mcp2515
     ../ArduinoCore-avr/cores/arduino
     ../ArduinoCore-avr/variants/standard
     ../ArduinoCore-avr/libraries/SPI/src
+    ../ArduinoCore-avr/libraries/EEPROM/src
+    ../ArduinoCore-avr/libraries/SoftwareSerial/src
 )
 
 add_library(arduino-mcp2515 STATIC
