@@ -261,8 +261,10 @@ void JKBMS::_sendCellWireResitance(uint8_t cellCount) {
       // Sensor address
       resistances[(j * 3)] = 0xD0 + (i * 2) + j;
       // The bytes of the value
-      resistances[(j * 3) + 1] = this->_data[cellWireResistances + (i * 4) + (j * 2)];
-      resistances[(j * 3) + 2] = this->_data[cellWireResistances + 1 + (i * 4) + (j * 2)];
+      resistances[(j * 3) + 1] =
+        this->_data[cellWireResistances + (i * 4) + (j * 2)];
+      resistances[(j * 3) + 2] =
+        this->_data[cellWireResistances + 1 + (i * 4) + (j * 2)];
     }
     // Send it off
     sendSensors(resistances, 6);
