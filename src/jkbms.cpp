@@ -68,6 +68,22 @@ void runBmsSensors() {
   messageData[3] = overallVoltage >> 8;
   messageData[4] = (uint8_t)overallVoltage;
   sendSensors(messageData, 5);
+
+  int32_t overallPower = _getPower(data);
+  messageData[0] = 0xC1;
+  messageData[1] = overallPower >> 24;
+  messageData[2] = overallPower >> 16;
+  messageData[3] = overallPower >> 8;
+  messageData[4] = (uint8_t)overallPower;
+  sendSensors(messageData, 5);
+
+  int32_t overallCurrent = _getCurrent(data);
+  messageData[0] = 0x20;
+  messageData[1] = overallCurrent >> 24;
+  messageData[2] = overallCurrent >> 16;
+  messageData[3] = overallCurrent >> 8;
+  messageData[4] = (uint8_t)overallCurrent;
+  sendSensors(messageData, 5);
 }
 
 uint32_t _getBmsResponse(uint8_t* data) {
@@ -207,9 +223,13 @@ uint32_t _getPackVoltage(uint8_t *data) {
 }
 
 int32_t _getPower(uint8_t *data) {
+  return _get32BitValue(data, 154);
 }
+
 int32_t _getCurrent(uint8_t *data) {
+  return _get32BitValue(data, 158);
 }
+
 uint16_t _getRemainingCapacity(uint8_t *data);
 uint32_t _getNominalCapacity(uint8_t *data);
 uint32_t _getCycleCount(uint8_t *data);
@@ -218,23 +238,23 @@ bool _getDischargeEnabled(uint8_t *data);
 
 uint16_t* _getTemperatures(uint8_t *data);
 
-uint8_t _get8BitValue(uint8_t *data, uint16_t offset) {
+int8_t _get8BitValue(uint8_t *data, uint16_t offset) {
   return data[offset];
 }
 
-uint16_t _get16BitValue(uint8_t *data, uint16_t offset) {
-  uint16_t ret = 0;
-  ret |= (uint16_t)data[offset] << 8;
-  ret |= (uint16_t)data[offset + 1];
+int16_t _get16BitValue(uint8_t *data, uint16_t offset) {
+  int16_t ret = 0;
+  ret |= (int16_t)data[offset] << 8;
+  ret |= (int16_t)data[offset + 1];
   return ret;
 }
 
-uint32_t _get32BitValue(uint8_t *data, uint16_t offset) {
-  uint32_t ret = 0;
+int32_t _get32BitValue(uint8_t *data, uint16_t offset) {
+  int32_t ret = 0;
 
-  ret |= (uint32_t)data[offset] << 24;
-  ret |= (uint32_t)data[offset + 1] << 16;
-  ret |= (uint32_t)data[offset + 2] << 8;
-  ret |= (uint32_t)data[offset + 3];
+  ret |= (int32_t)data[offset] << 24;
+  ret |= (int32_t)data[offset + 1] << 16;
+  ret |= (int32_t)data[offset + 2] << 8;
+  ret |= (int32_t)data[offset + 3];
   return ret;
 }

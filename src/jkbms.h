@@ -36,6 +36,6 @@ bool _getDischargeEnabled(uint8_t *data);
 uint16_t* _getTemperatures(uint8_t *data);
 
 
-uint8_t _get8BitValue(uint8_t *data, uint16_t offset);
-uint16_t _get16BitValue(uint8_t *data, uint16_t offset);
-uint32_t _get32BitValue(uint8_t *data, uint16_t offset);
+int8_t _get8BitValue(uint8_t *data, uint16_t offset);
+int16_t _get16BitValue(uint8_t *data, uint16_t offset);
+int32_t _get32BitValue(uint8_t *data, uint16_t offset);
