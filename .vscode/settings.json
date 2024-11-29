@@ -4,6 +4,8 @@
         "/usr/lib/avr/include/**",
         "/usr/lib/gcc/avr/5.4.0/include/**",
         "${workspaceFolder}/ArduinoCore-avr/variants/standard",
-        "${workspaceFolder}/ArduinoCore-avr/libraries/**"
-    ]
+        "${workspaceFolder}/ArduinoCore-avr/libraries/**",
+        "${workspaceFolder}/src"
+    ],
+    "C_Cpp.default.cppStandard": "c++11"
 }
