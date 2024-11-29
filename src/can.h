@@ -7,16 +7,9 @@
  */
 
 #pragma once
-#include <Arduino.h>
 
-enum CANID_FUNCTION {
-  EMCY        = B001,
-  SENSOR      = B010,
-  SETACTUATOR = B011,
-  SETCONFIG   = B100,
-  GETCONFIG   = B101,
-  HBEAT       = B111
-};
+#include <Arduino.h>
+#include "can-protocol/enums.h"
 
 void initCan();
 
