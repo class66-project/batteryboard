@@ -4,3 +4,6 @@
 [submodule "src/arduino-mcp2515"]
 	path = src/arduino-mcp2515
 	url = https://github.com/autowp/arduino-mcp2515
+[submodule "src/can-protocol"]
+	path = src/can-protocol
+	url = https://github.com/class66-project/can-protocol
