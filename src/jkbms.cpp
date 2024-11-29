@@ -68,12 +68,12 @@ void runBmsSensors() {
   messageData[3] = overallVoltage >> 8;
   messageData[4] = (uint8_t)overallVoltage;
   sendSensors(messageData, 5);
-
 }
 
 uint32_t _getBmsResponse(uint8_t* data) {
   // The trigger data to send to the BMS in order for it to send the data back
-  uint8_t _jktrigger[11] = {0x01, 0x10, 0x16, 0x20, 0x00, 0x01, 0x02, 0x00, 0x00, 0xD6, 0xF1};
+  uint8_t _jktrigger[11] =
+        {0x01, 0x10, 0x16, 0x20, 0x00, 0x01, 0x02, 0x00, 0x00, 0xD6, 0xF1};
 
   // Prepare the MAX485 to be written to
   digitalWrite(DE, 1);
@@ -207,10 +207,8 @@ uint32_t _getPackVoltage(uint8_t *data) {
 }
 
 int32_t _getPower(uint8_t *data) {
-
 }
 int32_t _getCurrent(uint8_t *data) {
-
 }
 uint16_t _getRemainingCapacity(uint8_t *data);
 uint32_t _getNominalCapacity(uint8_t *data);
