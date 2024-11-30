@@ -26,3 +26,6 @@
 
 // DE/RE pin for MAX485
 #define DE 9
+
+// pin for DS18B20
+#define ONE_WIRE_BUS 8

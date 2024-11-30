@@ -10,9 +10,26 @@
 #include "definitions.h"
 #include "statusled.h"
 #include "can.h"
+#include "OneWire/OneWire.h"
+#include "DallasTemperature/DallasTemperature.h"
+#include "can-protocol/sensors.h"
 
-uint16_t getTempearature(uint8_t index) {
-    // Do nothing for now
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+bool sensors_begun = false;
+
+int32_t getTempearature(uint8_t index) {
+  if (!sensors_begun) {
+    sensors.begin();
+    sensors_begun = true;
+  }
+
+  sensors.requestTemperatures();
+
+  float tempC = sensors.getTempCByIndex(0);
+
+  return (int32_t)floor(tempC * 100);
 }
 
 /**
@@ -36,13 +53,18 @@ void runLocalSensors() {
 
   flashStatusLED();
   uint16_t _24v = get24VoltLine();
+  int32_t _temperature = getTempearature();
 
-  uint8_t data[sizeof(uint16_t) + 1];
+  uint8_t data[8];
 
-  data[0] = 0x04;
-  for (int i=0; i < sizeof(uint16_t); i++) {
-    data[i + 1] = _24v >> i*8;
-  }
+  data[0] = VOLTAGE_SENSE_1;
+  data[1] = (uint8_t)_24v;
+  data[2] = _24v >> 8;
+  data[3] = TEMPERATURE_SENSOR_6;
+  data[4] = (uint8_t)_temperature;
+  data[5] = _temperature >> 8;
+  data[6] = _temperature >> 16;
+  data[7] = _temperature >> 24;
 
-  sendSensors(data, sizeof(uint16_t) + 1);
+  sendSensors(data, 8);
 }

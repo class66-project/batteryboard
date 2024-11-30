@@ -7,3 +7,9 @@
 [submodule "src/can-protocol"]
 	path = src/can-protocol
 	url = https://github.com/class66-project/can-protocol
+[submodule "src/OneWire"]
+	path = src/OneWire
+	url = https://github.com/PaulStoffregen/OneWire
+[submodule "src/DallasTemperature"]
+	path = src/DallasTemperature
+	url = https://github.com/milesburton/Arduino-Temperature-Control-Library

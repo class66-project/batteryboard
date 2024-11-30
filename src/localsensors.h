@@ -12,7 +12,7 @@
 
 #include "arduino-mcp2515/mcp2515.h"
 
-uint16_t getTempearature(uint8_t index = 0);
+int32_t getTempearature(uint8_t index = 0);
 uint16_t get24VoltLine();
 
 void runLocalSensors();

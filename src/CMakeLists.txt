@@ -4,25 +4,53 @@ file(GLOB SRC_FILES "*.cpp")
 
 target_sources(batteryboard PRIVATE ${SRC_FILES})
 
-target_link_libraries(batteryboard core SPI arduino-mcp2515 SoftwareSerial)
+target_link_libraries(batteryboard
+  core
+  SPI
+  arduino-mcp2515
+  SoftwareSerial
+  DallasTemperature
+  OneWire
+)
 
 target_include_directories(batteryboard PRIVATE
-    arduino-mcp2515
-    ../ArduinoCore-avr/cores/arduino
-    ../ArduinoCore-avr/variants/standard
-    ../ArduinoCore-avr/libraries/SPI/src
-    ../ArduinoCore-avr/libraries/EEPROM/src
-    ../ArduinoCore-avr/libraries/SoftwareSerial/src
+  arduino-mcp2515
+  DallasTemperature
+  OneWire
+  ../ArduinoCore-avr/cores/arduino
+  ../ArduinoCore-avr/variants/standard
+  ../ArduinoCore-avr/libraries/SPI/src
+  ../ArduinoCore-avr/libraries/EEPROM/src
+  ../ArduinoCore-avr/libraries/SoftwareSerial/src
 )
 
 add_library(arduino-mcp2515 STATIC
-    arduino-mcp2515/mcp2515.cpp
+  arduino-mcp2515/mcp2515.cpp
 )
 
 target_include_directories(arduino-mcp2515 PRIVATE
-    ../ArduinoCore-avr/cores/arduino
-    ../ArduinoCore-avr/variants/standard
-    ../ArduinoCore-avr/libraries/SPI/src
+  ../ArduinoCore-avr/cores/arduino
+  ../ArduinoCore-avr/variants/standard
+  ../ArduinoCore-avr/libraries/SPI/src
+)
+
+add_library(OneWire STATIC
+  OneWire/OneWire.cpp
+)
+
+target_include_directories(OneWire PRIVATE
+  ../ArduinoCore-avr/cores/arduino
+  ../ArduinoCore-avr/variants/standard
+)
+
+add_library(DallasTemperature STATIC
+  DallasTemperature/DallasTemperature.cpp
+)
+
+target_include_directories(DallasTemperature PRIVATE
+  ../ArduinoCore-avr/cores/arduino
+  ../ArduinoCore-avr/variants/standard
+  OneWire
 )
 
 
