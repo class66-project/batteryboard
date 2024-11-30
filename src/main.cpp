@@ -44,5 +44,5 @@ void loop() {
   runLocalSensors();
   runBmsSensors();
 
-  delay(5000);
+  delay(500);
 }
